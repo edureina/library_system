@@ -156,10 +156,7 @@ class Biblioteca:
         result = f"The following books are available in the library {self.nombre}: \n"
         for libro in self.libros_biblio:
             result += libro.mostrar_info_as_text() + "\n"
-
         return result
-
-
 
     def mostrar_estado_sistema(self):
         print("El Sistema de Bibliotecas contiene los siguientes títulos")
@@ -168,6 +165,15 @@ class Biblioteca:
         print("Los siguientes usuarios han sido registrados en el sistema de bibliotecas publicas: ") 
         for usuario in Biblioteca.usuarios:
             print(usuario.nombre)
+
+    def mostrar_estado_systema_as_text(self):
+        result = f"The library system contains the following books: \n"
+        for libro in Biblioteca.libros_sistema:
+            print(libro)
+            result += libro.mostrar_info_as_text() + "\n"
+        return result
+
+
 
 
 class SistemaBibliotecas:
