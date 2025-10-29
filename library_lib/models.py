@@ -26,6 +26,13 @@ class Libro:
         else:
             print("Libro:", self.titulo, "; Autor:", self.autor, "; Ano de publicación:", self.anio_publicacion, "; Libro Prestado")
 
+    def mostrar_info_as_text (self):
+        if self.disponible:
+            result = f"Libro: {self.titulo},  Autor: {self.autor},  Ano de publicación: {self.anio_publicacion},  Libro Disponible"
+        else:
+            result = f"Libro: {self.titulo},  Autor: {self.autor},  Ano de publicación: {self.anio_publicacion},  Libro Prestado"
+        return result
+
     def prestar (self):
         if self.disponible:
             self.disponible = False
@@ -144,6 +151,15 @@ class Biblioteca:
         print("Los siguientes usuarios han sido registrados en el sistema de bibliotecas publicas: ") 
         for usuario in Biblioteca.usuarios:
             print(usuario.nombre)
+
+    def mostrar_estado_biblio_as_text(self):
+        result = f"The following books are available in the library {self.nombre}: \n"
+        for libro in self.libros_biblio:
+            result += libro.mostrar_info_as_text() + "\n"
+
+        return result
+
+
 
     def mostrar_estado_sistema(self):
         print("El Sistema de Bibliotecas contiene los siguientes títulos")

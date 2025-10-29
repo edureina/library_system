@@ -1,4 +1,4 @@
-from library_lib import *
+from library_lib.models import *
 
 def main():
    
