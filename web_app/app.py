@@ -23,13 +23,19 @@ def user_registration_formular():
 def user_registration_process():
     # Get the data from the form
     nombre = request.form["nombre"]
-    NewUser = Usuario(nombre, 3456, [])
 
-    return f"Hola, {nombre}. Your user has been created"
+    NewUser = Usuario(nombre, 3456, [])
+    Triadu.registrar_usuario(NewUser)
+
+    resultado = Sistema_cargado.guardar_sistema("fitxer_biblioteques.pkl")
+
+    resultado += f"\n Hola, {nombre}. Your user has been created"
+
+    return f"<pre>{resultado}<pre>"
 
 @app.route("/system_status", methods=["GET"])
 def system_status():
-    status = Triadu.mostrar_estado_systema_as_text()
+    status = Sistema_cargado.mostrar_estado_systema_as_text() + "\n"
     return f"<pre>{status}</pre>"
 
 
@@ -38,7 +44,7 @@ if __name__ == "__main__":
 
 
     Sistema_cargado = SistemaBibliotecas.cargar_biblioteca("fitxer_biblioteques.pkl")
-    Triadu = Sistema_cargado["Triadu"]
+    Triadu = Sistema_cargado.sistema["Triadu"]
 
     app.run(debug=True)
 

@@ -114,6 +114,24 @@ class Biblioteca:
 
 
 
+    def __getstate__(self):
+        status = self.__dict__.copy()
+        status['usuarios_guardados'] = Biblioteca.usuarios
+        status['libros_sistema'] = Biblioteca.libros_sistema
+        status['bibliotecas_creadas'] = Biblioteca.bibliotecas_creadas
+        return status
+    
+    def __setstate__(self, status):
+        self.__dict__.update(status)
+        if not Biblioteca.usuarios:
+            Biblioteca.usuarios += status['usuarios_guardados']
+        if not Biblioteca.libros_sistema:
+            Biblioteca.libros_sistema += status['libros_sistema']
+        if Biblioteca.bibliotecas_creadas == 0:
+            Biblioteca.bibliotecas_creadas = status['bibliotecas_creadas']
+
+
+
     def agregar_libro(self, libro):
         self.libros_biblio.append(libro)
         Biblioteca.libros_sistema.append(libro)
@@ -158,21 +176,6 @@ class Biblioteca:
             result += libro.mostrar_info_as_text() + "\n"
         return result
 
-    def mostrar_estado_sistema(self):
-        print("El Sistema de Bibliotecas contiene los siguientes títulos")
-        for libro in Biblioteca.libros_sistema:
-            libro.mostrar_info()
-        print("Los siguientes usuarios han sido registrados en el sistema de bibliotecas publicas: ") 
-        for usuario in Biblioteca.usuarios:
-            print(usuario.nombre)
-
-    def mostrar_estado_systema_as_text(self):
-        result = f"The library system contains the following books: \n"
-        for libro in Biblioteca.libros_sistema:
-            print(libro)
-            result += libro.mostrar_info_as_text() + "\n"
-        return result
-
 
 
 
@@ -186,15 +189,38 @@ class SistemaBibliotecas:
 
     def guardar_sistema(self, nombre_archivo: str):
         with open(nombre_archivo, "wb") as f:
-            pickle.dump(self.sistema, f)
+            pickle.dump(self, f)
             print(f"El Sistema de Bibliotecas ha sido guardado en {nombre_archivo}")
+            return f"El Sistema de Bibliotecas ha sido guardado en {nombre_archivo} \n"
 
 
     @staticmethod
-    def cargar_biblioteca(nombre_archivo: str) -> dict:
+    def cargar_biblioteca(nombre_archivo: str) -> "SistemaBibliotecas":
         with open(nombre_archivo, "rb") as f:
             sistema = pickle.load(f)
-            if sistema is not None:
+            if isinstance(sistema, SistemaBibliotecas):
                 print(f"El Sistema de Bibliotecas ha sido cargado desde {nombre_archivo}")
+            else:
+                raise TypeError("The loaded file is not a SystemaBibliotecas valid object.")
+
             return sistema
+        
+
+    def mostrar_estado_sistema(self):
+        print("El Sistema de Bibliotecas contiene los siguientes títulos")
+        for libro in Biblioteca.libros_sistema:
+            libro.mostrar_info()
+        print("Los siguientes usuarios han sido registrados en el sistema de bibliotecas publicas: ") 
+        for usuario in Biblioteca.usuarios:
+            print(usuario.nombre)
+        
+    def mostrar_estado_systema_as_text(self):
+        result = f"The library system contains the following books: \n"
+        for libro in Biblioteca.libros_sistema:
+            print(libro)
+            result += libro.mostrar_info_as_text() + "\n"
+        result += "Los siguientes usuarios han sido registrados en el sistema de bibliotecas publicas: \n"
+        for usuario in Biblioteca.usuarios:
+            result += usuario.nombre + "\n"
+        return result
 
